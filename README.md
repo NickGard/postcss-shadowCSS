@@ -6,15 +6,42 @@
 [ci-img]:  https://travis-ci.org/NickGard/postcss-shadowCSS.svg
 [ci]:      https://travis-ci.org/NickGard/postcss-shadowCSS
 
+```jsx
+// foo.jsx
+export default function () => (
+  <div className="foo">
+    <strong>F</strong><em>oo</em>
+  </div>
+);
+
+// bar.jsx
+<Foo className="bar" />
+```
+
 ```css
-.foo {
-    /* Input example */
+// foo.styl
+.foo strong {
+  shadow-element: first-letter
+}
+.foo em {
+  shadow-element: trailing-letters
+}
+
+// bar.styl
+.bar::-s-first-letter {
+  font-size: 2em;
+}
+.bar::-s-trailing-letters::after {
+  content: 'oooooo';
 }
 ```
 
 ```css
-.foo {
-  /* Output example */
+.bar.foo strong {
+  font-size: 2em;
+}
+.bar.foo em::after {
+  content: 'oooooo';
 }
 ```
 
