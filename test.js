@@ -19,9 +19,6 @@ test('translates a shadow-element selector into its declared alias', (assert) =>
       font-size: 2em;
     }`;
   const expectedOutput = `
-    .foo {
-    }
-
     .bar.foo {
       font-size: 2em;
     }`;
@@ -57,7 +54,7 @@ test('warns for unknown nested shadow-element selector', (assert) => {
 
   return process(input)
     .then(result => {
-      assert.deepEqual(result.warnings().length, 2);
+      assert.deepEqual(result.warnings().length, 1);
     });
 });
 
@@ -73,57 +70,47 @@ test('ignores known pseudo-element selector', (assert) => {
   const expectedOutput = `
     .bar.foo::-webkit-inner-spinner {
       display: none;
+    }`;
+
+  return process(input)
+    .then(result => {
+      assert.deepEqual(result.css, expectedOutput);
+      assert.deepEqual(result.warnings().length, 0);
+    });
+});
+
+test('uses custom shadowPrefix if passed', (assert) => {
+  const input = `
+    .bar::-myApp-foo {
+      display: none;
     }
 
     .foo::-webkit-inner-spinner {
-    }`;
-  return process(input)
-    .then(result => {
-      assert.deepEqual(result.css, expectedOutput);
-      assert.deepEqual(result.warnings().length, 0);
-    });
-});
-
-test('warns if known vendor prefix is declared as a shadow-root', (assert) => {
-  const input = `
-    .foo {
-      shadow-root: webkit;
-    }`;
-
-  return process(input)
-    .then(result => {
-      assert.deepEqual(result.warnings().length, 1);
-    });
-});
-
-test('warns if shadow-root alias is not a single-depth id, class, or attribute selector', (assert) => {
-  const input = `
-    .foo .bar {
-      shadow-root: foo;
-    }`;
-
-  return process(input)
-    .then(result => {
-      assert.deepEqual(result.warnings().length, 1);
-    });
-});
-
-test('translates a shadow-root selector into its declared alias', (assert) => {
-  const input = `
-    .foo {
-      shadow-root: foo;
-    }
-
-    Foo.bar {
-      font-size: 2em;
+      shadow-element: foo;
     }`;
   const expectedOutput = `
+    .bar.foo::-webkit-inner-spinner {
+      display: none;
+    }`;
+
+  return process(input, {shadowPrefix: 'myApp'})
+    .then(result => {
+      assert.deepEqual(result.css, expectedOutput);
+      assert.deepEqual(result.warnings().length, 0);
+    });
+});
+
+test('removes rules that have only shadow-element delcarations and comments', (assert) => {
+  const input = `
     .foo {
+      shadow-element: foo;
     }
 
-    .foo.bar {
-      font-size: 2em;
+    .bar {
+      /* some comment */
+      shadow-element: bar
     }`;
+  const expectedOutput = '';
 
   return process(input)
     .then(result => {
@@ -132,5 +119,15 @@ test('translates a shadow-root selector into its declared alias', (assert) => {
     });
 });
 
-'\n    .bar::-s-foo {\n      display: none;\n    }\n\n    .foo::-webkit-inner-spinner {\n    }'
-'\n    .bar.foo::-webkit-inner-spinner {\n      display: none;\n    }\n\n    .foo::-webkit-inner-spinner {\n    }'
+test('warns if known vendor prefix is used', (assert) => {
+  const input = `
+    .foo {
+      shadow-element: foo;
+    }`;
+
+  return process(input, {shadowPrefix: 'webkit'})
+    .then(result => {
+      assert.deepEqual(result.warnings().length, 1);
+    });
+});
+
