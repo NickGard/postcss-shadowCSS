@@ -1,11 +1,13 @@
 # PostCSS ShadowCSS [![Build Status][ci-img]][ci]
 
-[PostCSS] plugin to provide element-like CSS references for components, their modifiable subcomponents, and their custstomizable states.
+[PostCSS] plugin to provide pseudo-element-like CSS references for component internals.
 
 [PostCSS]: https://github.com/postcss/postcss
 [ci-img]:  https://travis-ci.org/NickGard/postcss-shadowCSS.svg
 [ci]:      https://travis-ci.org/NickGard/postcss-shadowCSS
 
+## Example
+#### Markup
 ```jsx
 // foo.jsx
 export default function () => (
@@ -18,8 +20,9 @@ export default function () => (
 <Foo className="bar" />
 ```
 
+#### Input CSS
 ```css
-// foo.styl
+// foo.css
 .foo strong {
   shadow-element: first-letter
 }
@@ -27,7 +30,7 @@ export default function () => (
   shadow-element: trailing-letters
 }
 
-// bar.styl
+// bar.css
 .bar::-s-first-letter {
   font-size: 2em;
 }
@@ -36,6 +39,7 @@ export default function () => (
 }
 ```
 
+#### Output CSS
 ```css
 .bar.foo strong {
   font-size: 2em;
@@ -49,6 +53,7 @@ export default function () => (
 
 ```js
 postcss([ require('postcss-shadowCSS') ])
+postcss([ require('postcss-shadowCSS') ], {shadowPrefix: 'myApp'})
 ```
 
 See [PostCSS] docs for examples for your environment.

@@ -9,7 +9,7 @@ function process(input, opts) {
 
 /* Write tests here*/
 
-test('translates a shadow-element selector into its declared alias', (assert) => {
+test('translates a shadow-element selector into its declared alias if properly used', (assert) => {
   const input = `
     .foo {
       shadow-element: foo;
@@ -30,35 +30,7 @@ test('translates a shadow-element selector into its declared alias', (assert) =>
     });
 });
 
-test('warns for unknown shadow-element selector', (assert) => {
-  const input = `
-    .bar::-s-foo {
-      font-size: 2em;
-    }`;
-
-  return process(input)
-    .then(result => {
-      assert.deepEqual(result.warnings().length, 1);
-    });
-});
-
-test('warns for unknown nested shadow-element selector', (assert) => {
-  const input = `
-    .bar::-s-foo {
-      font-size: 2em;
-    }
-
-    .foo::-s-baz {
-      shadow-element: foo;
-    }`;
-
-  return process(input)
-    .then(result => {
-      assert.deepEqual(result.warnings().length, 1);
-    });
-});
-
-test('ignores known pseudo-element selector', (assert) => {
+test('ignores pseudo-element selector if it has a known vendor prefix', (assert) => {
   const input = `
     .bar::-s-foo {
       display: none;
@@ -100,7 +72,7 @@ test('uses custom shadowPrefix if passed', (assert) => {
     });
 });
 
-test('removes rules that have only shadow-element delcarations and comments', (assert) => {
+test('removes rules if they contain only shadow-element delcarations and comments', (assert) => {
   const input = `
     .foo {
       shadow-element: foo;
@@ -116,6 +88,34 @@ test('removes rules that have only shadow-element delcarations and comments', (a
     .then(result => {
       assert.deepEqual(result.css, expectedOutput);
       assert.deepEqual(result.warnings().length, 0);
+    });
+});
+
+test('warns if unknown shadow-element selector is used', (assert) => {
+  const input = `
+    .bar::-s-foo {
+      font-size: 2em;
+    }`;
+
+  return process(input)
+    .then(result => {
+      assert.deepEqual(result.warnings().length, 1);
+    });
+});
+
+test('warns if unknown nested shadow-element selector is used', (assert) => {
+  const input = `
+    .bar::-s-foo {
+      font-size: 2em;
+    }
+
+    .foo::-s-baz {
+      shadow-element: foo;
+    }`;
+
+  return process(input)
+    .then(result => {
+      assert.deepEqual(result.warnings().length, 1);
     });
 });
 
