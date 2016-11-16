@@ -3,7 +3,6 @@ var postcss = require('postcss');
 module.exports = postcss.plugin('postcss-shadowCSS', function (options) {
   'use strict';
 
-  const opts = options || {};
   const shadowSelectors = [];
 
   const isValidShadowSelector = (selector) => ([
@@ -38,12 +37,16 @@ module.exports = postcss.plugin('postcss-shadowCSS', function (options) {
   };
 
   return (root, result) => {
-    let shadowPrefix = `-${opts.shadowPrefix || 's'}-`;
+    let shadowPrefix = `-${options && options.shadowPrefix || 's'}-`;
 
     // Find all shadow declarations
     root.walkRules(rule => {
       rule.walkDecls('shadow-element', decl => {
-        registerShadowSelector({ name: shadowPrefix + decl.value, alias: rule.selector }, (err) => decl.warn(result, err));
+        registerShadowSelector(
+          { name: shadowPrefix + decl.value, alias: rule.selector },
+          (err) => decl.warn(result, err)
+        );
+
         // clean up
         decl.remove();
         if (rule.nodes.length === 0 || rule.nodes.every(n => n.type === 'comment')) {
