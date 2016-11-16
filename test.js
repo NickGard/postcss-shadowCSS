@@ -65,7 +65,7 @@ test('uses custom shadowPrefix if passed', (assert) => {
       display: none;
     }`;
 
-  return process(input, {shadowPrefix: 'myApp'})
+  return process(input, { shadowPrefix: 'myApp' })
     .then(result => {
       assert.deepEqual(result.css, expectedOutput);
       assert.deepEqual(result.warnings().length, 0);
@@ -125,9 +125,8 @@ test('warns if known vendor prefix is used', (assert) => {
       shadow-element: foo;
     }`;
 
-  return process(input, {shadowPrefix: 'webkit'})
+  return process(input, { shadowPrefix: 'webkit' })
     .then(result => {
       assert.deepEqual(result.warnings().length, 1);
     });
 });
-
