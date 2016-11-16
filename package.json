@@ -1,6 +1,6 @@
 {
   "name": "postcss-shadowCSS",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "PostCSS plugin to provide element-like CSS references for components, their modifiable subcomponents, and their custstomizable states",
   "keywords": [
     "postcss",
