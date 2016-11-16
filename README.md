@@ -55,5 +55,3 @@ export default function () => (
 postcss([ require('postcss-shadowCSS') ])
 postcss([ require('postcss-shadowCSS') ], {shadowPrefix: 'myApp'})
 ```
-
-See [PostCSS] docs for examples for your environment.
