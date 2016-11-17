@@ -1,6 +1,6 @@
 var postcss = require('postcss');
 
-module.exports = postcss.plugin('postcss-shadowCSS', function (options) {
+module.exports = postcss.plugin('postcss-shadowCSS', (options = {}) => {
   'use strict';
 
   const shadowSelectors = [];
@@ -37,7 +37,7 @@ module.exports = postcss.plugin('postcss-shadowCSS', function (options) {
   };
 
   return (root, result) => {
-    let shadowPrefix = `-${options && options.shadowPrefix || 's'}-`;
+    let shadowPrefix = `-${options.shadowPrefix || 's'}-`;
 
     // Find all shadow declarations
     root.walkRules(rule => {
